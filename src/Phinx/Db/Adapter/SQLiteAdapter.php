@@ -725,6 +725,7 @@ class SQLiteAdapter extends PdoAdapter implements AdapterInterface
         $this->startCommandTimer();
         $this->writeCommand('addForeignKey', array($table->getName(), $foreignKey->getColumns()));
         $this->execute('pragma foreign_keys = ON');
+        $this->execute('pragma legacy_alter_table = ON');
 
         $tmpTableName = 'tmp_' . $table->getName();
         $rows = $this->fetchAll('select * from sqlite_master where `type` = \'table\'');
@@ -757,6 +758,7 @@ class SQLiteAdapter extends PdoAdapter implements AdapterInterface
 
         $this->execute($sql);
         $this->execute(sprintf('DROP TABLE %s', $this->quoteTableName($tmpTableName)));
+        $this->execute('pragma legacy_alter_table = OFF');
         $this->endCommandTimer();
     }
 
